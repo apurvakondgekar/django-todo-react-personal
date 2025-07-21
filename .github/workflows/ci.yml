@@ -8,23 +8,47 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+
+      # ---- Backend Setup and Test ----
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-            python-version: '3.13'
+          python-version: '3.12'
 
       - name: Install backend dependencies
         run: |
           pip install pipenv
           pipenv install --dev
+        working-directory: ./backend
+
       - name: Run backend tests
         run: pipenv run python manage.py test
+        working-directory: ./backend
+
+      # ---- Frontend Setup and Test ----
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
       - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm install
-      - name: Run frontend tests
-        run: |
-          cd frontend
-          npm test -- --watchAll=false
+        run: npm ci
+        working-directory: ./frontend
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: ./frontend
+
+      - name: Run frontend (Playwright) tests
+        run: npx playwright test
+        working-directory: ./frontend
+
+      - name: Upload Playwright HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 14
