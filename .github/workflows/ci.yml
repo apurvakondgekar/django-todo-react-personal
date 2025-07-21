@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches: [ main ]
@@ -12,40 +11,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ---- Backend Setup and Test ----
+      # Backend
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Install backend dependencies
         run: |
           pip install pipenv
           pipenv install --dev
-        working-directory: ./backend
 
       - name: Run backend tests
-        run: pipenv run python manage.py test
-        working-directory: ./backend
+        run: pipenv run python backend/manage.py test
 
-      # ---- Frontend Setup and Test ----
+      # Frontend
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-
       - name: Install frontend dependencies
         run: npm ci
         working-directory: ./frontend
-
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
         working-directory: ./frontend
-
       - name: Run frontend (Playwright) tests
         run: npx playwright test
         working-directory: ./frontend
-
       - name: Upload Playwright HTML report
         uses: actions/upload-artifact@v4
         with:
