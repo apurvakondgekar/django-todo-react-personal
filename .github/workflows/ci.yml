@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Backend
+      # Backend (run at root, Pipfile at root)
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -20,7 +20,6 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev
-
       - name: Run backend tests
         run: pipenv run python backend/manage.py test
 
