@@ -16,15 +16,19 @@ test('add a new todo item via modal', async ({ page }) => {
   await page.fill('input[placeholder="Enter Todo description"]', 'From grocery store');
 
   // 5. (Optional) Check Completed box
-  // await page.check('text=Completed');
+  // await page.click('text=Completed');
 
   // 6. Click the green "Save" button
   await page.click('button:has-text("Save")');
   
   // Wait a moment for UI update
-  await page.waitForTimeout(1000);
+  //await page.waitForTimeout(5000);
 
-  // Optional: Assert that the new todo appears on the main UI (adjust selector as needed)
-  await expect(page.getByText('Buy bread').last()).toBeVisible();
+  // This gives you just the last matching element
+   await expect(
+    page.locator('span.todo-title', { hasText: 'Buy bread' }).last()
+  ).toBeVisible();
+
+
 
 });
