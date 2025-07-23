@@ -36,16 +36,6 @@ jobs:
         run: npm ci
         working-directory: ./frontend
         
-      - name: Start React App
-        run: npm start &
-        working-directory: ./frontend
-        env:
-          PORT: 3000
-
-      - name: Wait for React App
-        run: npx wait-on http://localhost:3000
-        working-directory: ./frontend
-
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
         working-directory: ./frontend
